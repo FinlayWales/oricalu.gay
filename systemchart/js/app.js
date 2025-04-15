@@ -28,6 +28,17 @@ function update () {
         members_parent.appendChild(sorted_elems[i][1]["element"]);
     }
 
+    let edit_elems = document.getElementsByClassName("edit");
+    if (edit_mode) {
+        for (let i = 0; i < edit_elems.length; i++) {
+            edit_elems[i].style.display = "none";
+        }
+    } else {
+        for (let i = 0; i < edit_elems.length; i++) {
+            edit_elems[i].style.display = "block";
+        }
+    }
+
     updateAllConnections();
 }
 
@@ -35,6 +46,7 @@ function update () {
 
 let headmates_obj = {};
 let popup_shown = false;
+let edit_mode = false;
 
 // Add Headmate
 
@@ -80,6 +92,17 @@ function add_headmate_elem (headmate_obj) {
     elem_img.setAttribute("draggable", "false");
     elem_img.src = headmate_obj["image"];
 
+    let elem_edit = document.createElement("div");
+    elem_edit.classList.add("edit");
+    let edit_button = document.createElement("button");
+    let delete_button = document.createElement("button");
+    edit_button.innerText = "Edit";
+    delete_button.innerText = "Delete";
+    edit_button.addEventListener("click", function(){show_edit_popup(hashCode(headmate_obj["name"]).toString())}, false);
+    delete_button.addEventListener("click", function(){delete_headmate(hashCode(headmate_obj["name"]).toString())}, false);
+    elem_edit.appendChild(edit_button);
+    elem_edit.appendChild(delete_button);
+
     headmate_elem.style.position = "relative";
     headmate_elem.style.left = "0px";
     headmate_elem.style.top = "0px";
@@ -87,6 +110,7 @@ function add_headmate_elem (headmate_obj) {
     headmate_elem.appendChild(elem_title);
     headmate_elem.appendChild(elem_source);
     headmate_elem.appendChild(elem_img);
+    headmate_elem.appendChild(elem_edit);
 
     return headmate_elem;
 }
@@ -340,3 +364,113 @@ export_button.addEventListener("click", export_func);
 import_button.addEventListener("click", show_import_popup);
 upload_file.addEventListener("click", import_func);
 cancel_file.addEventListener("click", cancel_import);
+
+// Edit
+
+let edit_mode_button = document.getElementById("edit_mode");
+let headmate_edit_popup = document.getElementById("headmate_edit_popup");
+let edit_name = document.getElementById("edit_name");
+let edit_source = document.getElementById("edit_source");
+let edit_image = document.getElementById("edit_image");
+let edit_info = document.getElementById("edit_info");
+let headmate_id_input = document.getElementById("headmate_id_input");
+let update_headmate = document.getElementById("update_headmate");
+let cancel_update_headmate = document.getElementById("cancel_update_headmate");
+
+function show_edit_popup (headmate_id) {
+    if (popup_shown == false) {
+        popup_shown = true;
+        edit_name.value = headmates_obj[headmate_id]["name"];
+        edit_source.value = headmates_obj[headmate_id]["source"];
+        edit_info.value = headmates_obj[headmate_id]["info"];
+        headmate_id_input.value = headmate_id;
+        console.log(headmate_id_input.value);
+        headmate_edit_popup.style.display = "block";
+    }
+}
+
+function hide_edit_popup () {
+    edit_name.value = "";
+    edit_source.value = "";
+    edit_image.value = "";
+    edit_info.value = "";
+    headmate_id_input.value = "";
+    headmate_edit_popup.style.display = "none";
+    popup_shown = false;
+}
+
+function toggle_edit_mode () {
+    let edit_elems = document.getElementsByClassName("edit");
+    if (edit_mode) {
+        for (let i = 0; i < edit_elems.length; i++) {
+            edit_elems[i].style.display = "none";
+        }
+        edit_mode = false;
+    } else {
+        for (let i = 0; i < edit_elems.length; i++) {
+            edit_elems[i].style.display = "block";
+        }
+        edit_mode = true;
+    }
+}
+
+function update_headmate_func (edit_headmate_id, reader = null) {
+    let edit_headmate_obj = {};
+    edit_headmate_obj["name"] = edit_name.value;
+    edit_headmate_obj["source"] = edit_source.value;
+    if (reader) {
+        edit_headmate_obj["image"] = reader.result;
+    } else {
+        edit_headmate_obj["image"] = headmates_obj[edit_headmate_id]["image"];
+    }
+    edit_headmate_obj["info"] = edit_info.value;
+    edit_headmate_obj["connections"] = headmates_obj[edit_headmate_id]["connections"];
+    edit_headmate_obj["element"] = add_headmate_elem(edit_headmate_obj);
+
+    if (edit_name.value != headmates_obj[edit_headmate_id]["name"]) {
+        for (let [key, value] of Object.entries(headmates_obj)) {
+            if (value["connections"].includes(edit_headmate_id)) {
+                headmates_obj[key]["connections"][value["connections"].indexOf(edit_headmate_id)] = hashCode(edit_name.value).toString();
+            }
+        }
+        delete headmates_obj[edit_headmate_id];
+        headmates_obj[hashCode(edit_name.value).toString()] = edit_headmate_obj;
+    } else {
+        headmates_obj[edit_headmate_id] = edit_headmate_obj;
+    }
+
+    hide_edit_popup();
+    update();
+}
+
+function edit_headmate () {
+    let edit_headmate_id = headmate_id_input.value;
+    let temp_file = edit_image.files[0];
+    if (temp_file) {
+        let reader = new FileReader();
+        reader.readAsDataURL(temp_file);
+        reader.onloadend = function() {
+            update_headmate_func(edit_headmate_id, reader);
+        }
+    } else {
+        update_headmate_func(edit_headmate_id);
+    }
+}
+
+function cancel_edit () {
+    hide_edit_popup();
+}
+
+function delete_headmate (headmate_id) {
+    delete headmates_obj[headmate_id];
+    for (let [key, value] of Object.entries(headmates_obj)) {
+        if (value["connections"].includes(headmate_id)) {
+            headmates_obj[key]["connections"].splice(value["connections"].indexOf(headmate_id), 1);
+        }
+    }
+    update();
+}
+
+edit_mode_button.addEventListener("click", toggle_edit_mode);
+update_headmate.addEventListener("click", edit_headmate);
+cancel_update_headmate.addEventListener("click", cancel_edit);

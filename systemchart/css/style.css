@@ -148,3 +148,18 @@ body {
 #download_anchor_elem {
     display: none;
 }
+
+.edit {
+    position: absolute;
+    bottom: 10px;
+    display: none;
+}
+
+.edit > button {
+    margin-left: 10px;
+    border: 1px solid rgb(31, 31, 31);
+}
+
+#headmate_id_input {
+    display: none;
+}

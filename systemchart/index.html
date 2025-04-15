@@ -16,6 +16,7 @@
                 <button class="button" id="open_connections_popup">Add Connections</button>
                 <button class="button" id="import_button">Import</button>
                 <button class="button" id="export_button">Export</button>
+                <button class="button" id="edit_mode">Edit Mode</button>
             </div>
         </div>
         <div class="members">
@@ -28,6 +29,17 @@
                     <div><label for="image">Image: </label><input id="image" type="file" /></div>
                     <label for="info">Additional Info: </label><textarea id="info"></textarea>
                     <div><button class="button" id="add_headmate">Add Headmate</button><button class="button" id="cancel_headmate">Cancel</button></div>
+                </div>
+            </div>
+            <div id="headmate_edit_popup" class="popup_container">
+                <div class="popup">
+                    <input id="headmate_id_input" type="text" />
+                    <h3>Edit Headmate</h3>
+                    <div><label for="edit_name">Name: </label><input id="edit_name" type="text" /></div>
+                    <div><label for="edit_source">Source: </label><input id="edit_source" type="text" /></div>
+                    <div><label for="edit_image">Image: </label><input id="edit_image" type="file" /></div>
+                    <label for="edit_info">Additional Info: </label><textarea id="edit_info"></textarea>
+                    <div><button class="button" id="update_headmate">Update Headmate</button><button class="button" id="cancel_update_headmate">Cancel</button></div>
                 </div>
             </div>
             <div id="connections_add_popup" class="popup_container">
