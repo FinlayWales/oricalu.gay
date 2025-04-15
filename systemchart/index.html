@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>System Chart</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="main">
+        <div class="header">
+            <h1 class="title">System Chart Maker</h1>
+            <div class="buttons">
+                <button class="button" id="open_member_popup">Add New Member</button>
+                <button class="button" id="open_connections_popup">Add Connections</button>
+                <button class="button" id="import_button">Import</button>
+                <button class="button" id="export_button">Export</button>
+            </div>
+        </div>
+        <div class="members">
+            <canvas id="connections"></canvas>
+            <div id="headmate_add_popup" class="popup_container">
+                <div class="popup">
+                    <h3>Add New Headmate</h3>
+                    <div><label for="name">Name: </label><input id="name" type="text" /></div>
+                    <div><label for="source">Source: </label><input id="source" type="text" /></div>
+                    <div><label for="image">Image: </label><input id="image" type="file" /></div>
+                    <label for="info">Additional Info: </label><textarea id="info"></textarea>
+                    <div><button class="button" id="add_headmate">Add Headmate</button><button class="button" id="cancel_headmate">Cancel</button></div>
+                </div>
+            </div>
+            <div id="connections_add_popup" class="popup_container">
+                <div class="popup">
+                    <h3>Add Connections</h3>
+                    <label for="initial_headmate">Select Headmate:</label><select id="initial_headmate"></select>
+                    <label for="connection_checkboxes">Select Connections:</label><div id="connections_container"></div>
+                    <div><button class="button" id="add_connections">Edit Connections</button><button class="button" id="cancel_connections">Cancel</button></div>
+                </div>
+            </div>
+            <div id="import_popup" class="popup_container">
+                <div class="popup">
+                    <h3>Import System Chart</h3>
+                    <div><label for="import_file">Import File:</label><input type="file" id="import_file" /></div>
+                    <div id="flex_grow"></div>
+                    <div><button class="button" id="upload_file">Import</button><button class="button" id="cancel_file">Cancel</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a id="download_anchor_elem"></a>
+    <script src="js/app.js"></script>
+</body>
+</html>
